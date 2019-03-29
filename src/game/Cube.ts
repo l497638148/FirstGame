@@ -1,0 +1,4 @@
+class Cube {
+	public constructor() {
+	}
+}
