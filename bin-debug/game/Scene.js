@@ -8,23 +8,21 @@ var __extends = this && this.__extends || function __extends(t, e) {
 for (var i in e) e.hasOwnProperty(i) && (t[i] = e[i]);
 r.prototype = e.prototype, t.prototype = new r();
 };
-var GameScene = (function (_super) {
-    __extends(GameScene, _super);
-    function GameScene(mainSp) {
+var Scene = (function (_super) {
+    __extends(Scene, _super);
+    function Scene(root) {
         var _this = _super.call(this) || this;
-        _this._mainSp = mainSp;
-        _this.init();
+        _this.init(root);
         return _this;
     }
-    GameScene.prototype.init = function () {
+    Scene.prototype.init = function (root) {
         this._bg = new egret.Shape();
         this._bg.graphics.beginFill(0x1c86ee, 1);
-        this._bg.graphics.drawRect(0, 0, this._mainSp.stage.stageWidth, this._mainSp.stage.stageHeight);
+        this._bg.graphics.drawRect(0, 0, root.stage.stageWidth, root.stage.stageHeight);
         this._bg.graphics.endFill();
         this.addChild(this._bg);
-        this._mainSp.addChild(this);
     };
-    return GameScene;
+    return Scene;
 }(egret.DisplayObjectContainer));
-__reflect(GameScene.prototype, "GameScene");
-//# sourceMappingURL=GameScene.js.map
+__reflect(Scene.prototype, "Scene");
+//# sourceMappingURL=Scene.js.map

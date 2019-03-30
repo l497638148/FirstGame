@@ -13,10 +13,17 @@
 		"libs/modules/promise/promise.js"
 	],
 	"game": [
-		"bin-debug/GameScene.js",
+		"bin-debug/game/Ball.js",
 		"bin-debug/LoadingUI.js",
-		"bin-debug/Main.js",
 		"bin-debug/Platform.js",
+		"bin-debug/consts/BallConst.js",
+		"bin-debug/consts/CubeConst.js",
+		"bin-debug/consts/PaddleConst.js",
+		"bin-debug/Main.js",
+		"bin-debug/game/Cube.js",
+		"bin-debug/game/GameScene.js",
+		"bin-debug/game/Paddle.js",
+		"bin-debug/game/Scene.js",
 		"bin-debug/ui/StartShowBtn.js"
 	]
 }

@@ -2,16 +2,16 @@ class Scene extends egret.DisplayObjectContainer{
 
 	private _bg:egret.Shape;
 	
-	public constructor() {
+	public constructor(root:egret.DisplayObjectContainer) {
 		super();
-		this.init();
+		this.init(root);
 	}
 
-	private init(){
+	private init(root:egret.DisplayObjectContainer){
 
 		this._bg = new egret.Shape();
 		this._bg.graphics.beginFill(0x1c86ee,1);
-		this._bg.graphics.drawRect(0,0,this.stage.width,this.stage.height);
+		this._bg.graphics.drawRect(0,0,root.stage.stageWidth,root.stage.stageHeight);
 		this._bg.graphics.endFill();
 		this.addChild(this._bg);
 	}

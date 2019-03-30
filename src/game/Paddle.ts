@@ -1,19 +1,24 @@
 class Paddle extends egret.DisplayObjectContainer{
 
-	private _paddleImg:egret.Bitmap;
+	private _paddleBmp:egret.Bitmap;
+	private _key:string;
 
-	public constructor() {
+	public constructor(key:string) {
 		super();
-		this.init();
+		this.init(key);
 	}
 
-	private init(){
-		this._paddleImg = new egret.Bitmap();
-		this.setSkin("paddleBlu_png");
-		this.addChild(this._paddleImg);
+	private init(key:string){
+		this._paddleBmp = new egret.Bitmap();
+		this._paddleBmp.width = 60;
+		this._paddleBmp.height = 20;
+		this.setSkin(key);
+		this.addChild(this._paddleBmp);
+		this.anchorOffsetX = this.width * 0.5;
+		this.anchorOffsetY = this.height * 0.5;
 	}
 
 	public setSkin(key:string){
-		this._paddleImg.texture = RES.getRes("key");
+		this._paddleBmp.texture = RES.getRes(key);
 	}
 }

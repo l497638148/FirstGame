@@ -93,7 +93,8 @@ class Main extends egret.DisplayObjectContainer {
      */
     private createGameScene() {
 
-        var gameScene = new GameScene(this);
+        var gameScene = new GameScene();
+        gameScene.start(this);
     }
 
     /**
