@@ -1,0 +1,4 @@
+class GameRegister {
+	public constructor() {
+	}
+}

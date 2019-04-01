@@ -42,7 +42,7 @@ class Main extends egret.DisplayObjectContainer {
             // custom lifecycle plugin
 
             context.onUpdate = () => {
-
+               
             }
         })
 

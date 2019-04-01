@@ -1,4 +1,4 @@
-class Paddle extends egret.DisplayObjectContainer{
+class Paddle extends egret.DisplayObjectContainer implements IDispose{
 
 	private _paddleBmp:egret.Bitmap;
 	private _key:string;
@@ -20,5 +20,15 @@ class Paddle extends egret.DisplayObjectContainer{
 
 	public setSkin(key:string){
 		this._paddleBmp.texture = RES.getRes(key);
+	}
+
+	public dispose(){
+
+		if(this._paddleBmp)
+		{
+			this.removeChild(this._paddleBmp);
+			this._paddleBmp.texture.dispose();
+			this._paddleBmp = null;
+		}
 	}
 }

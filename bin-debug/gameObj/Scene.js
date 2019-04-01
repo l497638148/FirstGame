@@ -22,7 +22,14 @@ var Scene = (function (_super) {
         this._bg.graphics.endFill();
         this.addChild(this._bg);
     };
+    Scene.prototype.dispose = function () {
+        if (this._bg) {
+            this.removeChild(this._bg);
+            this._bg.graphics.clear();
+            this._bg = null;
+        }
+    };
     return Scene;
 }(egret.DisplayObjectContainer));
-__reflect(Scene.prototype, "Scene");
+__reflect(Scene.prototype, "Scene", ["IDispose"]);
 //# sourceMappingURL=Scene.js.map

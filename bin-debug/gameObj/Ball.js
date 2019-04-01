@@ -25,7 +25,14 @@ var Ball = (function (_super) {
     Ball.prototype.setKey = function (key) {
         this._ball.texture = RES.getRes(key);
     };
+    Ball.prototype.dispose = function () {
+        if (this._ball) {
+            this.removeChild(this._ball);
+            this._ball.texture.dispose();
+            this._ball = null;
+        }
+    };
     return Ball;
 }(egret.DisplayObjectContainer));
-__reflect(Ball.prototype, "Ball");
+__reflect(Ball.prototype, "Ball", ["IDispose"]);
 //# sourceMappingURL=Ball.js.map

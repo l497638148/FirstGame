@@ -23,7 +23,14 @@ var Cube = (function (_super) {
     Cube.prototype.setKey = function (key) {
         this._cubeBmp.texture = RES.getRes(key);
     };
+    Cube.prototype.dispose = function () {
+        if (this._cubeBmp) {
+            this.removeChild(this._cubeBmp);
+            this._cubeBmp.texture.dispose();
+            this._cubeBmp = null;
+        }
+    };
     return Cube;
 }(egret.DisplayObjectContainer));
-__reflect(Cube.prototype, "Cube");
+__reflect(Cube.prototype, "Cube", ["IDispose"]);
 //# sourceMappingURL=Cube.js.map

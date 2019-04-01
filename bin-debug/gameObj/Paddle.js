@@ -27,7 +27,14 @@ var Paddle = (function (_super) {
     Paddle.prototype.setSkin = function (key) {
         this._paddleBmp.texture = RES.getRes(key);
     };
+    Paddle.prototype.dispose = function () {
+        if (this._paddleBmp) {
+            this.removeChild(this._paddleBmp);
+            this._paddleBmp.texture.dispose();
+            this._paddleBmp = null;
+        }
+    };
     return Paddle;
 }(egret.DisplayObjectContainer));
-__reflect(Paddle.prototype, "Paddle");
+__reflect(Paddle.prototype, "Paddle", ["IDispose"]);
 //# sourceMappingURL=Paddle.js.map

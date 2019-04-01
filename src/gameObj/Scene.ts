@@ -1,4 +1,4 @@
-class Scene extends egret.DisplayObjectContainer{
+class Scene extends egret.DisplayObjectContainer implements IDispose{
 
 	private _bg:egret.Shape;
 	
@@ -14,5 +14,15 @@ class Scene extends egret.DisplayObjectContainer{
 		this._bg.graphics.drawRect(0,0,root.stage.stageWidth,root.stage.stageHeight);
 		this._bg.graphics.endFill();
 		this.addChild(this._bg);
+	}
+
+	public dispose(){
+
+		if(this._bg)
+		{
+			this.removeChild(this._bg);
+			this._bg.graphics.clear();
+			this._bg = null;
+		}
 	}
 }

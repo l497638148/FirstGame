@@ -1,4 +1,4 @@
-class Cube extends egret.DisplayObjectContainer{
+class Cube extends egret.DisplayObjectContainer implements IDispose{
 
 	private _cubeBmp:egret.Bitmap;
 	private _key:string;
@@ -17,6 +17,16 @@ class Cube extends egret.DisplayObjectContainer{
 	private setKey(key:string){
 
 		this._cubeBmp.texture = RES.getRes(key);
+	}
+
+	public dispose(){
+		
+		if(this._cubeBmp)
+		{
+			this.removeChild(this._cubeBmp);
+			this._cubeBmp.texture.dispose();
+			this._cubeBmp = null;
+		}
 	}
 	
 }
