@@ -13,20 +13,24 @@
 		"libs/modules/promise/promise.js"
 	],
 	"game": [
-		"bin-debug/gameObj/Cube.js",
+		"bin-debug/gameObj/Ball.js",
 		"bin-debug/LoadingUI.js",
 		"bin-debug/Platform.js",
 		"bin-debug/consts/BallConst.js",
 		"bin-debug/consts/CubeConst.js",
+		"bin-debug/consts/GameControlConst.js",
 		"bin-debug/consts/PaddleConst.js",
-		"bin-debug/gameObj/Ball.js",
+		"bin-debug/event/Dispatcher.js",
+		"bin-debug/event/GameEvent.js",
 		"bin-debug/Main.js",
+		"bin-debug/gameObj/Cube.js",
 		"bin-debug/gameObj/CubePanel.js",
 		"bin-debug/gameObj/GameScene.js",
 		"bin-debug/gameObj/Paddle.js",
 		"bin-debug/gameObj/Scene.js",
 		"bin-debug/interface/IDispose.js",
 		"bin-debug/manager/GameRegister.js",
-		"bin-debug/ui/StartShowBtn.js"
+		"bin-debug/ui/StartShowBtn.js",
+		"bin-debug/utils/CollisionUtil.js"
 	]
 }

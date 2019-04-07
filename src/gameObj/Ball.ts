@@ -1,8 +1,8 @@
 class Ball extends egret.DisplayObjectContainer implements IDispose{
 	private _ball:egret.Bitmap;
 
-	private _speedX:number = -1.0;
-	private _speedY:number = -1.0;
+	private _speedX:number = 10.0;
+	private _speedY:number = 10.0;
 	public constructor(key:string) {
 		super();
 		this.init(key);
@@ -21,6 +21,32 @@ class Ball extends egret.DisplayObjectContainer implements IDispose{
 		this._ball.texture = RES.getRes(key);
 	}
 
+	public move()
+	{
+		this.x -= this._speedX;
+		this.y -= this._speedY;
+	}
+
+	public set speedX(value:number)
+	{
+		this._speedX = value;
+	}
+
+	public get speedX():number
+	{
+		return this._speedX;
+	}
+
+	public set speedY(value:number)
+	{
+		this._speedY = value;
+	}
+
+	public get speedY():number
+	{
+		return this._speedY;
+	}
+
 	public dispose(){
 
 		if(this._ball)
@@ -30,4 +56,5 @@ class Ball extends egret.DisplayObjectContainer implements IDispose{
 			 this._ball = null;
 		}
 	}
+	
 }

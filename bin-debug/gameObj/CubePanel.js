@@ -21,12 +21,33 @@ var CubePanel = (function (_super) {
     CubePanel.prototype.create = function (type, horSize, verSize) {
         for (var i = 0; i < verSize; i++) {
             for (var j = 0; j < horSize; j++) {
+                //let cube = new Cube(type);
                 var cube = new Cube(type);
                 cube.x = cube.width * j;
                 cube.y = cube.height * i;
+                cube.id = i * j + j;
                 this.addChild(cube);
+                this._cubes.push(cube);
             }
         }
+    };
+    CubePanel.prototype.checkCollision = function (ball) {
+        var index = -1;
+        console.log("aaa");
+        this._cubes.forEach(function (item, i, arr) {
+            if (item.collision(ball)) {
+                if (item.life <= 0) {
+                    item.parent.removeChild(item);
+                    item.dispose();
+                    item = null;
+                    arr.splice(i, 1);
+                }
+                return true;
+            }
+        });
+        return false;
+    };
+    CubePanel.prototype.update = function () {
     };
     CubePanel.prototype.dispose = function () {
         for (var i = 0; i < this._cubes.length; i++) {

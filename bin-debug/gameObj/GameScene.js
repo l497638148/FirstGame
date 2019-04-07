@@ -15,22 +15,52 @@ var GameScene = (function (_super) {
         _this.initData();
         return _this;
     }
+    GameScene.prototype.initData = function () {
+        this._ballMoveRect = new egret.Rectangle();
+        this._paddleMoveRect = new egret.Rectangle();
+        this._distance = new egret.Point();
+        this._touched = false;
+    };
     GameScene.prototype.start = function (root) {
         this._root = root;
         this.createScene();
         this.createPlayerControlObj();
         this.createCubes();
-        this.addEvent();
+        this.addTouchEvent();
+        egret.startTick(this.update, this);
+        this._gameStatus = GameControlConst.START;
+        this.setMoveRectData();
     };
-    GameScene.prototype.initData = function () {
-        this._distance = new egret.Point();
-        this._touched = false;
+    GameScene.prototype.stop = function () {
+        egret.stopTick(this.update, this);
+        this.delTouchEvent();
     };
-    GameScene.prototype.addEvent = function () {
+    GameScene.prototype.addTouchEvent = function () {
         this._paddle.addEventListener(egret.TouchEvent.TOUCH_BEGIN, this.paddleMouseDown, this);
         this._paddle.addEventListener(egret.TouchEvent.TOUCH_END, this.paddleMouseUp, this);
     };
+    GameScene.prototype.delTouchEvent = function () {
+        this._paddle.removeEventListener(egret.TouchEvent.TOUCH_BEGIN, this.paddleMouseDown, this);
+        this._paddle.removeEventListener(egret.TouchEvent.TOUCH_END, this.paddleMouseUp, this);
+    };
+    GameScene.prototype.setMoveRectData = function () {
+        var w = this._root.stage.stageWidth;
+        var h = this._root.stage.stageHeight;
+        var b = this._ballMoveRect;
+        b.x = b.width * 0.5;
+        b.y = b.height * 0.5;
+        b.width = w - b.width;
+        b.height = h - b.height * 0.5;
+        var p = this._paddleMoveRect;
+        p.x = p.width * 0.5;
+        p.y = p.height * 0.5;
+        p.width = w - p.width;
+        p.height = h - p.height;
+    };
     GameScene.prototype.paddleMouseDown = function (e) {
+        if (this._gameStatus == GameControlConst.START) {
+            this._gameStatus = GameControlConst.RUNNING;
+        }
         this._touched = true;
         this._distance.x = e.stageX - this._paddle.x;
         this._paddle.addEventListener(egret.TouchEvent.TOUCH_MOVE, this.paddleMouseMove, this);
@@ -42,20 +72,6 @@ var GameScene = (function (_super) {
     GameScene.prototype.paddleMouseMove = function (e) {
         if (this._touched) {
             this._paddle.x = e.stageX - this._distance.x;
-            this.rangePaddlePos();
-        }
-    };
-    GameScene.prototype.rangePaddlePos = function () {
-        var ract = new egret.Rectangle();
-        ract.x = this._paddle.width * 0.5;
-        ract.y = this._paddle.height * 0.5;
-        ract.width = this._root.stage.stageWidth - this._paddle.width;
-        ract.height = this._root.stage.stageHeight - this._paddle.height;
-        if (this._paddle.x < ract.x) {
-            this._paddle.x = ract.x;
-        }
-        else if (this._paddle.x > ract.x + ract.width) {
-            this._paddle.x = ract.x + ract.width;
         }
     };
     GameScene.prototype.createScene = function () {
@@ -78,21 +94,41 @@ var GameScene = (function (_super) {
         this._cubePanel.create(CubeConst.BLUE_RETANGLE, 10, 5);
         this._root.addChild(this._cubePanel);
     };
-    GameScene.prototype.stop = function () {
-        this.delEvent();
+    GameScene.prototype.update = function (timeStamp) {
+        if (this._gameStatus == GameControlConst.RUNNING) {
+            this.rangeObjPos(this._paddle, this._paddleMoveRect);
+            this.checkBall();
+            this.checkCollision();
+            this._ball.move();
+        }
+        return false;
     };
-    GameScene.prototype.delEvent = function () {
+    GameScene.prototype.rangeObjPos = function (obj, ract) {
+        if (obj.x < ract.x) {
+            obj.x = ract.x;
+        }
+        else if (obj.x > ract.x + ract.width) {
+            obj.x = ract.x + ract.width;
+        }
     };
-    GameScene.prototype.hitTest = function (obj1, obj2) {
-        var rect1 = obj1.getBounds();
-        var rect2 = obj2.getBounds();
-        rect1.x = obj1.x;
-        rect1.y = obj1.y;
-        rect2.x = obj2.x;
-        rect2.y = obj2.y;
-        return rect1.intersects(rect2);
+    GameScene.prototype.checkBall = function () {
+        var b = this._ball;
+        if (b.x < this._ballMoveRect.x || b.x > this._ballMoveRect.x + this._ballMoveRect.width) {
+            b.speedX *= -1;
+        }
+        if (b.y < this._ballMoveRect.y) {
+            b.speedY *= -1;
+        }
+        if (b.y > this._ballMoveRect.y + this._ballMoveRect.height) {
+            this._gameStatus = GameControlConst.GAME_OVER;
+        }
+    };
+    GameScene.prototype.checkCollision = function () {
+        var bo = this._cubePanel.checkCollision(this._ball);
     };
     GameScene.prototype.dispose = function () {
+        egret.stopTick(this.update, this);
+        this._gameStatus = GameControlConst.STOP;
         if (this._scene) {
             this._scene.dispose();
             this._scene = null;

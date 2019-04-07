@@ -8,35 +8,77 @@ class GameScene extends egret.DisplayObjectContainer implements IDispose{
 	private _touched:boolean;
 	private _distance:egret.Point;
 
-	private _gameStatus:boolean;
+	private _gameStatus:number;
+
+	public _ballMoveRect:egret.Rectangle;
+	public _paddleMoveRect:egret.Rectangle;
 
 	public constructor() {
 		super();
 		this.initData();
 	}
 
+	private initData()
+	{
+		this._ballMoveRect = new egret.Rectangle();
+		this._paddleMoveRect = new egret.Rectangle();
+		this._distance = new egret.Point();
+		this._touched = false;
+	}
+
+
 	public start(root:egret.DisplayObjectContainer){
 		this._root = root;    
 		this.createScene();
 		this.createPlayerControlObj();
 		this.createCubes();
-		this.addEvent();
+		this.addTouchEvent();
 		egret.startTick(this.update,this);
-		this._gameStatus = true;
+		this._gameStatus = GameControlConst.START;
+		this.setMoveRectData();
 	}  
 
-	private initData()
-	{
-		this._distance = new egret.Point();
-		this._touched = false;
+	public stop(){
+		egret.stopTick(this.update,this);
+		this.delTouchEvent();
 	}
 
-	private addEvent(){
+	private addTouchEvent(){
 		this._paddle.addEventListener(egret.TouchEvent.TOUCH_BEGIN,this.paddleMouseDown,this);
 		this._paddle.addEventListener(egret.TouchEvent.TOUCH_END,this.paddleMouseUp,this);
 	}
 
+	private delTouchEvent(){
+		this._paddle.removeEventListener(egret.TouchEvent.TOUCH_BEGIN,this.paddleMouseDown,this);
+		this._paddle.removeEventListener(egret.TouchEvent.TOUCH_END,this.paddleMouseUp,this);
+	}
+
+	private setMoveRectData(){
+
+		var w = this._root.stage.stageWidth;
+		var h = this._root.stage.stageHeight;
+
+		var b = this._ballMoveRect;
+		b.x = b.width * 0.5;
+		b.y = b.height * 0.5;
+		b.width = w - b.width;
+		b.height = h - b.height * 0.5;
+
+		var p = this._paddleMoveRect;
+		p.x = p.width * 0.5;
+		p.y = p.height *0.5;
+		p.width = w - p.width;
+		p.height = h - p.height;
+		
+	}
+
 	private paddleMouseDown(e:egret.TouchEvent){
+
+		if(this._gameStatus == GameControlConst.START)
+		{
+			this._gameStatus = GameControlConst.RUNNING;
+		}
+
 		this._touched = true;
 		this._distance.x = e.stageX - this._paddle.x;
 		this._paddle.addEventListener(egret.TouchEvent.TOUCH_MOVE,this.paddleMouseMove,this);
@@ -52,25 +94,6 @@ class GameScene extends egret.DisplayObjectContainer implements IDispose{
 		if(this._touched)
 		{
 			this._paddle.x = e.stageX - this._distance.x;
-			this.rangePaddlePos(this._paddle);
-		}
-	}
-
-	private rangePaddlePos(obj:egret.DisplayObjectContainer){
-
-		var ract = new egret.Rectangle();
-		ract.x = obj.width * 0.5;
-		ract.y = obj.height *0.5;
-		ract.width = this._root.stage.stageWidth - obj.width;
-		ract.height = this._root.stage.stageHeight - obj.height;
-
-		if(obj.x < ract.x )
-		{
-			obj.x = ract.x;
-		}
-		else if (obj.x > ract.x + ract.width)
-		{
-			obj.x = ract.x + ract.width;
 		}
 	}
 
@@ -100,34 +123,58 @@ class GameScene extends egret.DisplayObjectContainer implements IDispose{
 		this._root.addChild(this._cubePanel);
 	}
 
-	public stop(){
-		this.delEvent();
-	}
-
-	private delEvent(){
-
-	}
-
 	private update(timeStamp: number):boolean{
 
-		if(this._gameStatus)
+		if(this._gameStatus ==  GameControlConst.RUNNING)
 		{
+			this.rangeObjPos(this._paddle,this._paddleMoveRect);
+			this.checkBall();
 			this.checkCollision();
-			return;
+			this._ball.move();
 		}
 		return false;
 	}
 
+	private rangeObjPos(obj:egret.DisplayObjectContainer,ract:egret.Rectangle){
+
+		if(obj.x < ract.x )
+		{
+			obj.x = ract.x;
+		}
+		else if (obj.x > ract.x + ract.width)
+		{
+			obj.x = ract.x + ract.width;
+		}
+	}
+
+	private checkBall()
+	{
+		var b = this._ball;
+		if(b.x < this._ballMoveRect.x || b.x > this._ballMoveRect.x + this._ballMoveRect.width)
+		{
+			b.speedX *= -1;
+		}
+
+		if(b.y < this._ballMoveRect.y)
+		{
+			b.speedY *= -1;
+		}
+
+		if(b.y > this._ballMoveRect.y + this._ballMoveRect.height)
+		{
+			this._gameStatus = GameControlConst.GAME_OVER;
+		}
+	}
+
 	private checkCollision(){
-		var px:number = this._ball.x;
-		var py:number = this._ball.y - this._ball.height * 0.5;
-		this._cubePanel.checkCollision(px,py);
+		
+		var bo = this._cubePanel.checkCollision(this._ball);
 	}
 
 	public dispose()
 	{
 		egret.stopTick(this.update,this);
-		this._gameStatus = false;
+		this._gameStatus = GameControlConst.STOP;
 		if(this._scene)
 		{
 			this._scene.dispose();

@@ -87,13 +87,28 @@ class Main extends egret.DisplayObjectContainer {
     }
 
     private textfield: egret.TextField;
+    private btn:StartShowBtn;
     /**
      * 创建游戏场景
      * Create a game scene
      */
     private createGameScene() {
 
-        var gameScene = new GameScene();
+        var shape = new egret.Shape();
+        shape.graphics.beginFill(0xffffff,1);
+        shape.graphics.drawRect(0,0,this.stage.stageWidth,this.stage.stageHeight);
+        shape.graphics.endFill();
+        this.addChild(shape);
+
+
+        this.btn = new StartShowBtn();
+        this.addChild(this.btn);
+        this.btn.addEventListener(egret.TouchEvent.TOUCH_TAP,this.onEnterGame,this);
+    }
+
+    private onEnterGame(e:egret.TouchEvent)
+    {
+         var gameScene = new GameScene();
         gameScene.start(this);
     }
 
