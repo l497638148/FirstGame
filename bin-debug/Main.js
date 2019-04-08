@@ -155,13 +155,23 @@ var Main = (function (_super) {
         shape.graphics.drawRect(0, 0, this.stage.stageWidth, this.stage.stageHeight);
         shape.graphics.endFill();
         this.addChild(shape);
-        this.btn = new StartShowBtn();
-        this.addChild(this.btn);
-        this.btn.addEventListener(egret.TouchEvent.TOUCH_TAP, this.onEnterGame, this);
+        this._gameScene = new GameScene();
+        this._gameScene.visible = false;
+        this._btn = new StartShowBtn();
+        this.addChildAt(this._btn, 100);
+        this.setBtnEnable(true);
+        this._btn.addEventListener(egret.TouchEvent.TOUCH_TAP, this.onEnterGame, this);
+    };
+    Main.prototype.setBtnEnable = function (bo) {
+        this._btn.visible = this._btn.touchEnabled = bo;
     };
     Main.prototype.onEnterGame = function (e) {
-        var gameScene = new GameScene();
-        gameScene.start(this);
+        this.setBtnEnable(false);
+        this._gameScene.start(this);
+    };
+    Main.prototype.stopGame = function () {
+        this._gameScene.visible = false;
+        this.setBtnEnable(true);
     };
     /**
      * 根据name关键字创建一个Bitmap对象。name属性请参考resources/resource.json配置文件的内容。

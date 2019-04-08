@@ -31,9 +31,10 @@ var GameScene = (function (_super) {
         this._gameStatus = GameControlConst.START;
         this.setMoveRectData();
     };
-    GameScene.prototype.stop = function () {
+    GameScene.prototype.gameOver = function () {
         egret.stopTick(this.update, this);
         this.delTouchEvent();
+        this._root.stopGame(); //临时先写这边，只是为了跑通流程，之后加了流程管理类之后统一修改
     };
     GameScene.prototype.addTouchEvent = function () {
         this._paddle.addEventListener(egret.TouchEvent.TOUCH_BEGIN, this.paddleMouseDown, this);
@@ -42,20 +43,21 @@ var GameScene = (function (_super) {
     GameScene.prototype.delTouchEvent = function () {
         this._paddle.removeEventListener(egret.TouchEvent.TOUCH_BEGIN, this.paddleMouseDown, this);
         this._paddle.removeEventListener(egret.TouchEvent.TOUCH_END, this.paddleMouseUp, this);
+        this._paddle.removeEventListener(egret.TouchEvent.TOUCH_MOVE, this.paddleMouseMove, this);
     };
     GameScene.prototype.setMoveRectData = function () {
         var w = this._root.stage.stageWidth;
         var h = this._root.stage.stageHeight;
         var b = this._ballMoveRect;
-        b.x = b.width * 0.5;
-        b.y = b.height * 0.5;
-        b.width = w - b.width;
-        b.height = h - b.height * 0.5;
+        b.x = this._ball.width * 0.5;
+        b.y = this._ball.height * 0.5;
+        b.width = w - this._ball.width;
+        b.height = h - this._ball.height * 0.5;
         var p = this._paddleMoveRect;
-        p.x = p.width * 0.5;
-        p.y = p.height * 0.5;
-        p.width = w - p.width;
-        p.height = h - p.height;
+        p.x = this._paddle.width * 0.5;
+        p.y = this._paddle.height * 0.5;
+        p.width = w - this._paddle.width;
+        p.height = h - this._paddle.height;
     };
     GameScene.prototype.paddleMouseDown = function (e) {
         if (this._gameStatus == GameControlConst.START) {
@@ -121,10 +123,14 @@ var GameScene = (function (_super) {
         }
         if (b.y > this._ballMoveRect.y + this._ballMoveRect.height) {
             this._gameStatus = GameControlConst.GAME_OVER;
+            this.gameOver();
         }
     };
     GameScene.prototype.checkCollision = function () {
-        var bo = this._cubePanel.checkCollision(this._ball);
+        this._cubePanel.collide(this._ball);
+        if (this._paddle.collide(this._ball)) {
+            this._ball.collidePaddleSpeed(this._paddle);
+        }
     };
     GameScene.prototype.dispose = function () {
         egret.stopTick(this.update, this);

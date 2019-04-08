@@ -16,6 +16,8 @@ class Cube extends egret.DisplayObjectContainer implements IDispose{
 		this.setKey(key);
 		this.addChild(this._cubeBmp);
 		this._life = oLife;
+		this.anchorOffsetX = this.width * 0.5;
+		this.anchorOffsetY = this.height * 0.5;
 	}
 
 	private setKey(key:string){
@@ -23,28 +25,17 @@ class Cube extends egret.DisplayObjectContainer implements IDispose{
 		this._cubeBmp.texture = RES.getRes(key);
 	}
 	
-	public collision(ball:Ball){
+	public collide(ball:Ball){
 		
-		console.log("bbb");
 		 var rangeX = 0;
 		 var rangeY = 0;
 		 rangeX = Math.abs(ball.x - this.x);
 		 rangeY = Math.abs(ball.y - this.y);
 
-		 if(rangeX > this.width && rangeX < (this.width + ball.width) && rangeY < (this.height + ball.height))
+		 if(rangeX <= (this.width + ball.width) * 0.5 && rangeY <= (this.height + ball.height) * 0.5)
 		 {
-			 if(ball.x < this.x && ball.speedX > 0 || ball.x > this.x && ball.speedX < 0)
-			 {
-				 return false;
-			 }
-			 else{
-				 this._life--;
-				//  if(this.life <= 0)
-				//  {
-				// 	Dispatcher.instance.dispatchEvent(new GameEvent(GameEvent.CUBE_DIE));
-				//  }
-				 return true;
-			 }
+			this._life--;
+			return true;
 		 }
 		
 		return false;

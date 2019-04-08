@@ -87,7 +87,8 @@ class Main extends egret.DisplayObjectContainer {
     }
 
     private textfield: egret.TextField;
-    private btn:StartShowBtn;
+    private _btn:StartShowBtn;
+    private _gameScene:GameScene;
     /**
      * 创建游戏场景
      * Create a game scene
@@ -100,16 +101,24 @@ class Main extends egret.DisplayObjectContainer {
         shape.graphics.endFill();
         this.addChild(shape);
 
-
-        this.btn = new StartShowBtn();
-        this.addChild(this.btn);
-        this.btn.addEventListener(egret.TouchEvent.TOUCH_TAP,this.onEnterGame,this);
+        this._btn = new StartShowBtn();
+        this.addChild(this._btn);
+        this.setBtnEnable(true);
+        this._btn.addEventListener(egret.TouchEvent.TOUCH_TAP,this.onEnterGame,this);
+    }
+    private setBtnEnable(bo:boolean)
+    {
+        this._btn.visible = this._btn.touchEnabled = bo;
     }
 
     private onEnterGame(e:egret.TouchEvent)
     {
-         var gameScene = new GameScene();
-        gameScene.start(this);
+        this._gameScene = new GameScene();
+        this._gameScene.start(this);
+    }
+
+    public stopGame(){
+        
     }
 
     /**

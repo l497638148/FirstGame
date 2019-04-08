@@ -22,6 +22,21 @@ class Paddle extends egret.DisplayObjectContainer implements IDispose{
 		this._paddleBmp.texture = RES.getRes(key);
 	}
 
+	public collide(ball:Ball):boolean{
+
+		let b = ball;
+		let p = this;
+
+		var disX = Math.abs(b.x - this.x);
+		var disY = Math.abs(b.y - this.y);
+		if(disX < (b.width + this.width) * 0.5 && disY < (b.height + p.height) * 0.5)
+		{
+			return true;
+		}
+
+		return false;
+	}
+
 	public dispose(){
 
 		if(this._paddleBmp)

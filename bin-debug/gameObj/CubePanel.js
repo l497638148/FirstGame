@@ -23,31 +23,31 @@ var CubePanel = (function (_super) {
             for (var j = 0; j < horSize; j++) {
                 //let cube = new Cube(type);
                 var cube = new Cube(type);
-                cube.x = cube.width * j;
-                cube.y = cube.height * i;
-                cube.id = i * j + j;
+                cube.x = cube.width * (j + 0.5);
+                cube.y = cube.height * (i + 0.5);
+                cube.id = i * horSize + j;
                 this.addChild(cube);
                 this._cubes.push(cube);
+                console.log("i:" + i + ",j:" + j + ",id:" + cube.id);
             }
         }
     };
-    CubePanel.prototype.checkCollision = function (ball) {
+    CubePanel.prototype.collide = function (ball) {
         var index = -1;
-        console.log("aaa");
+        var bo = false;
         this._cubes.forEach(function (item, i, arr) {
-            if (item.collision(ball)) {
+            if (item.collide(ball)) {
+                ball.collideCubeSpeed(item);
                 if (item.life <= 0) {
                     item.parent.removeChild(item);
                     item.dispose();
                     item = null;
                     arr.splice(i, 1);
                 }
-                return true;
+                bo = true;
             }
         });
-        return false;
-    };
-    CubePanel.prototype.update = function () {
+        return bo;
     };
     CubePanel.prototype.dispose = function () {
         for (var i = 0; i < this._cubes.length; i++) {

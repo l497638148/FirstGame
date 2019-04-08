@@ -20,41 +20,39 @@ class CubePanel extends egret.DisplayObjectContainer implements IDispose{
 			{
 				//let cube = new Cube(type);
 				var cube = new Cube(type);
-				cube.x = cube.width * j;
-				cube.y = cube.height * i;
-				cube.id = i *j + j;
+				cube.x = cube.width * (j + 0.5);
+				cube.y = cube.height * (i + 0.5);
+				cube.id = i *horSize + j;
 				this.addChild(cube);
 				this._cubes.push(cube);
+				 console.log("i:" + i + ",j:"+ j + ",id:" + cube.id);
 			}
 		}
 	}
 
-	public checkCollision(ball:Ball):boolean
+	public collide(ball:Ball):boolean
 	{	
 		var index:number = -1;
-
-		console.log("aaa");
+		var bo:boolean = false;
 
 		this._cubes.forEach((item,i,arr) => {
 			
-			if(item.collision(ball))
+			if(item.collide(ball))
 			{
+				ball.collideCubeSpeed(item);
 				if(item.life <= 0)
 				{
 					item.parent.removeChild(item);
 					item.dispose();
 					item = null;
-					arr.splice(i,1);
+					arr.splice(i,1);  
 				}
 
-				return true;
+				bo =  true;
 			}
 		})
-		return false;
-	}
-
-	public update(){
 		
+		return bo;
 	}
 
 	public dispose()

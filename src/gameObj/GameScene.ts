@@ -1,6 +1,6 @@
 class GameScene extends egret.DisplayObjectContainer implements IDispose{
 
-	private _root:egret.DisplayObjectContainer;
+	private _root:Main;
 	private _scene:Scene;
 	private _paddle:Paddle;
 	private _ball:Ball;
@@ -27,7 +27,7 @@ class GameScene extends egret.DisplayObjectContainer implements IDispose{
 	}
 
 
-	public start(root:egret.DisplayObjectContainer){
+	public start(root:Main){
 		this._root = root;    
 		this.createScene();
 		this.createPlayerControlObj();
@@ -38,7 +38,7 @@ class GameScene extends egret.DisplayObjectContainer implements IDispose{
 		this.setMoveRectData();
 	}  
 
-	public stop(){
+	public gameOver(){
 		egret.stopTick(this.update,this);
 		this.delTouchEvent();
 	}
@@ -51,6 +51,7 @@ class GameScene extends egret.DisplayObjectContainer implements IDispose{
 	private delTouchEvent(){
 		this._paddle.removeEventListener(egret.TouchEvent.TOUCH_BEGIN,this.paddleMouseDown,this);
 		this._paddle.removeEventListener(egret.TouchEvent.TOUCH_END,this.paddleMouseUp,this);
+		this._paddle.removeEventListener(egret.TouchEvent.TOUCH_MOVE,this.paddleMouseMove,this);
 	}
 
 	private setMoveRectData(){
@@ -59,16 +60,16 @@ class GameScene extends egret.DisplayObjectContainer implements IDispose{
 		var h = this._root.stage.stageHeight;
 
 		var b = this._ballMoveRect;
-		b.x = b.width * 0.5;
-		b.y = b.height * 0.5;
-		b.width = w - b.width;
-		b.height = h - b.height * 0.5;
+		b.x = this._ball.width * 0.5;
+		b.y = this._ball.height * 0.5;
+		b.width = w - this._ball.width;
+		b.height = h - this._ball.height * 0.5;
 
 		var p = this._paddleMoveRect;
-		p.x = p.width * 0.5;
-		p.y = p.height *0.5;
-		p.width = w - p.width;
-		p.height = h - p.height;
+		p.x = this._paddle.width * 0.5;
+		p.y = this._paddle.height *0.5;
+		p.width = w - this._paddle.width;
+		p.height = h - this._paddle.height;
 		
 	}
 
@@ -163,12 +164,17 @@ class GameScene extends egret.DisplayObjectContainer implements IDispose{
 		if(b.y > this._ballMoveRect.y + this._ballMoveRect.height)
 		{
 			this._gameStatus = GameControlConst.GAME_OVER;
+			this.gameOver();
 		}
 	}
 
 	private checkCollision(){
 		
-		var bo = this._cubePanel.checkCollision(this._ball);
+		this._cubePanel.collide(this._ball);
+		if(this._paddle.collide(this._ball))
+		{
+			this._ball.collidePaddleSpeed(this._paddle)
+		}
 	}
 
 	public dispose()

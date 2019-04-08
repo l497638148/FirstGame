@@ -27,6 +27,16 @@ var Paddle = (function (_super) {
     Paddle.prototype.setSkin = function (key) {
         this._paddleBmp.texture = RES.getRes(key);
     };
+    Paddle.prototype.collide = function (ball) {
+        var b = ball;
+        var p = this;
+        var disX = Math.abs(b.x - this.x);
+        var disY = Math.abs(b.y - this.y);
+        if (disX < (b.width + this.width) * 0.5 && disY < (b.height + p.height) * 0.5) {
+            return true;
+        }
+        return false;
+    };
     Paddle.prototype.dispose = function () {
         if (this._paddleBmp) {
             this.removeChild(this._paddleBmp);
